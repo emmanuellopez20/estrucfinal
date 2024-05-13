@@ -46,7 +46,7 @@ def menu_ord():
         except ValueError:
             print("Por favor, ingresa un número entero.")
     while len(lista) < ele:
-        elements_input = input("Inserte los elementos de la lista: ")
+        elements_input = input("Inserte los elementos de la lista separados por espacios: ")
         elements = elements_input.split()
         for element in elements:
             try:
@@ -122,31 +122,31 @@ def visualize_binary_tree(root):
     plt.ion()  # Habilita el modo interactivo
     plt.show()  # Muestra la figura
 
-def interact_with_avl_tree():
-    avl = AVLTree()
-    while True:
-        print("\nSubmenú del Árbol AVL")
-        print("1. Insertar elementos")
-        print("2. Eliminar un elemento")
-        print("3. Mostrar el árbol")
-        print("4. Regresar al menú principal")
-        option = input("Elige una opción: ")
-        if option == "1":
-            elements = input("Ingresa los elementos a insertar separados por espacios: ")
-            elements = list(map(int, elements.split()))
-            for element in elements:
-                avl.insert(element)
-                print(avl)
-        elif option == "2":
-            element = int(input("Ingresa el elemento a eliminar: "))
-            avl.delete_value(element)
-            print(avl)
-        elif option == "3":
-            print(avl)
-        elif option == "4":
-            break
-        else:
-            print("Opción inválida. Por favor, intenta de nuevo.")
+def interact_with_avl_tree():  # Definición de la función interact_with_avl_tree
+    avl = AVLTree()  # Inicializa un nuevo árbol AVL
+    while True:  # Inicia un bucle infinito
+        print("\nSubmenú del Árbol AVL")  # Imprime el submenú del árbol AVL
+        print("1. Insertar elementos")  # Opción para insertar elementos
+        print("2. Eliminar un elemento")  # Opción para eliminar un elemento
+        print("3. Mostrar el árbol")  # Opción para mostrar el árbol
+        print("4. Regresar al menú principal")  # Opción para regresar al menú principal
+        option = input("Elige una opción: ")  # Solicita al usuario que elija una opción
+        if option == "1":  # Si el usuario elige la opción 1, ejecuta el siguiente bloque de código
+            elements = input("Ingresa los elementos a insertar separados por espacios: ")  # Solicita al usuario que ingrese los elementos a insertar
+            elements = list(map(int, elements.split()))  # Convierte la entrada del usuario en una lista de números enteros
+            for element in elements:  # Recorre cada elemento en la lista de elementos
+                avl.insert(element)  # Inserta el elemento en el árbol AVL
+                print(avl)  # Imprime el árbol AVL
+        elif option == "2":  # Si el usuario elige la opción 2, ejecuta el siguiente bloque de código
+            element = int(input("Ingresa el elemento a eliminar: "))  # Solicita al usuario que ingrese el elemento a eliminar
+            avl.delete_value(element)  # Elimina el elemento del árbol AVL
+            print(avl)  # Imprime el árbol AVL
+        elif option == "3":  # Si el usuario elige la opción 3, ejecuta el siguiente bloque de código
+            print(avl)  # Imprime el árbol AVL
+        elif option == "4":  # Si el usuario elige la opción 4, ejecuta el siguiente bloque de código
+            break  # Rompe el bucle
+        else:  # Si el usuario no elige una opción válida, ejecuta el siguiente bloque de código
+            print("Opción inválida. Por favor, intenta de nuevo.")  # Imprime un mensaje de error
 
 
 # Función de ordenamiento de burbuja
@@ -462,43 +462,75 @@ def showResult2(n, a):
 
     print('\n', res[0])  # Imprime la lista ordenada
 
-def countingSort(arr):
-    size = len(arr)
-    max_value = max(arr)
-    comparaciones = 0
-    movimientos = 0
-    iteraciones = 0
-    count = [0] * (max_value + 1)
-    output = [0] * size
-    for m in arr:
-        count[m] += 1
-        iteraciones += 1
-    for m in range(1, max_value + 1):
-        count[m] += count[m - 1]
-        iteraciones += 1
-    for m in range(size - 1, -1, -1):
-        output[count[arr[m]] - 1] = arr[m]
-        count[arr[m]] -= 1
-        movimientos += 1
-        comparaciones += 1
-        iteraciones += 1
-    print("Iteraciones :", iteraciones)
-    print("Movimientos :", movimientos)
-    print("Comparaciones :", comparaciones)
-    return output
+def countingSort(arr):  # Definición de la función countingSort
+    size = len(arr)  # Obtiene la longitud del arreglo
+    max_value = max(arr)  # Obtiene el valor máximo en el arreglo
+    comparaciones = 0  # Inicializa el contador de comparaciones a 0
+    movimientos = 0  # Inicializa el contador de movimientos a 0
+    iteraciones = 0  # Inicializa el contador de iteraciones a 0
+    count = [0] * (max_value + 1)  # Inicializa un arreglo de conteo con una longitud igual al valor máximo más 1
+    output = [0] * size  # Inicializa un arreglo de salida con una longitud igual a la longitud del arreglo
+    for m in arr:  # Recorre cada elemento en el arreglo
+        count[m] += 1  # Incrementa el valor en el índice m del arreglo de conteo
+        iteraciones += 1  # Incrementa el contador de iteraciones
+    for m in range(1, max_value + 1):  # Recorre cada número desde 1 hasta el valor máximo
+        count[m] += count[m - 1]  # Suma el valor en el índice m - 1 del arreglo de conteo al valor en el índice m
+        iteraciones += 1  # Incrementa el contador de iteraciones
+    for m in range(size - 1, -1, -1):  # Recorre cada índice desde el último hasta el primero en el arreglo
+        output[count[arr[m]] - 1] = arr[m]  # Asigna el valor en el índice m del arreglo al índice count[arr[m]] - 1 del arreglo de salida
+        count[arr[m]] -= 1  # Decrementa el valor en el índice arr[m] del arreglo de conteo
+        movimientos += 1  # Incrementa el contador de movimientos
+        comparaciones += 1  # Incrementa el contador de comparaciones
+        iteraciones += 1  # Incrementa el contador de iteraciones
+    print("Iteraciones :", iteraciones)  # Imprime el número de iteraciones
+    print("Movimientos :", movimientos)  # Imprime el número de movimientos
+    print("Comparaciones :", comparaciones)  # Imprime el número de comparaciones
+    return output  # Retorna el arreglo ordenado
 
 def shell_sort(arr):
+    # Obtiene la longitud del arreglo
     n = len(arr)
+    # Inicializa la brecha a la mitad de la longitud del arreglo
     gap = n // 2
+
+    # Inicializa los contadores
+    iters = 0  # Iteraciones
+    query = 0  # Consultas
+    compa = 0  # Comparaciones
+    swaps = 0  # Intercambios
+
+    # Inicia un bucle que se ejecuta hasta que la brecha sea 0
     while gap > 0:
+        # Recorre cada elemento en el arreglo a partir de la brecha
         for i in range(gap, n):
+            # Almacena el valor del elemento actual en una variable temporal
             temp = arr[i]
             j = i
+            # Inicia un bucle que se ejecuta hasta que j sea menor que la brecha o el elemento en la posición j - brecha sea menor o igual que temp
             while j >= gap and arr[j - gap] > temp:
+                # Asigna el valor del elemento en la posición j - brecha al elemento en la posición j
                 arr[j] = arr[j - gap]
                 j -= gap
+                # Incrementa el contador de intercambios
+                swaps += 1
+                # Incrementa el contador de comparaciones
+                compa += 1
+            # Asigna el valor de temp al elemento en la posición j
             arr[j] = temp
+            # Incrementa el contador de iteraciones
+            iters += 1
+        # Divide la brecha por 2
         gap //= 2
+        # Incrementa el contador de consultas
+        query += 1
+
+    # Imprime los contadores
+    print("Iteraciones :", iters)
+    print("Consultas (querys):", query)
+    print("Comparaciones :", compa)
+    print("Intercambios (swaps):", swaps)
+
+    # Retorna el arreglo ordenado
     return arr
 
 
@@ -577,15 +609,15 @@ def reg():
         print("\nUSUARIO YA REGISTRADO. VUELVA A INTENTARLO PORFAVOR")
         reg()
 
-#funcion para imprimir usuario
-def imprimir_diccionarios():
-    print("Usuarios:")
-    for i in range(8):
-        print([char for char in usuarios[i]])
 
-    print("\nContraseñas:")
-    for i in range(8):
-        print([char for char in contrasenas[i]])
+def imprimir_diccionarios():  # Definición de la función imprimir_diccionarios
+    print("Usuarios:")  # Imprime "Usuarios:"
+    for i in range(8):  # Recorre cada número desde 0 hasta 7
+        print([char for char in usuarios[i]])  # Imprime cada carácter en el índice i del arreglo usuarios
+
+    print("\nContraseñas:")  # Imprime "Contraseñas:"
+    for i in range(8):  # Recorre cada número desde 0 hasta 7
+        print([char for char in contrasenas[i]])  # Imprime cada carácter en el índice i del arreglo contraseñas
 
 # Función para registrar las respuestas a las preguntas de seguridad
 def SecP(posicion):
