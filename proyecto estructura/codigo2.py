@@ -37,47 +37,74 @@ def menu():
         main(0)  # Llama a la función principal con 0 como argumento
 
 # Función del menú de ordenamiento
+# Definición de la función menu_ord
 def menu_ord():
+    # Se inicializa una lista vacía
     lista = []
+    # Bucle infinito hasta que el usuario ingrese un número entero
     while True:
         try:
+            # Se solicita al usuario que ingrese el número de elementos que desea insertar en la lista
             ele = int(input("Cuantos elementos desea insertar: "))
+            # Si el usuario ingresa un número entero, se rompe el bucle
             break
         except ValueError:
+            # Si el usuario no ingresa un número entero, se imprime un mensaje de error y se repite el bucle
             print("Por favor, ingresa un número entero.")
+    # Bucle hasta que la longitud de la lista sea igual al número de elementos que el usuario desea insertar
     while len(lista) < ele:
+        # Se solicita al usuario que ingrese los elementos de la lista, separados por espacios
         elements_input = input("Inserte los elementos de la lista separados por espacios: ")
+        # Se divide la entrada del usuario en una lista de elementos
         elements = elements_input.split()
+        # Bucle para cada elemento en la lista de elementos
         for element in elements:
             try:
+                # Se intenta convertir cada elemento en un número entero y se añade a la lista
                 num = int(element)
                 lista.append(num)
+                # Si la longitud de la lista es igual al número de elementos que el usuario desea insertar, se rompe el bucle
                 if len(lista) == ele:
                     break
             except ValueError:
+                # Si un elemento no se puede convertir en un número entero, se imprime un mensaje de error
                 print(f"Error: '{element}' no es un entero válido. Por favor, ingresa solo números enteros.")
+    # Se imprime la lista original
     print('\nLista original', lista)
+    # Se solicita al usuario que elija un método de ordenamiento
     eleg=input('\n¿Que metodo deseas utilizar?\n\n1.Burbuja\n2.Burbuja mejorado\n3.selection\n4.Insert\n5.Bucket\n6.Comb\n7.Counting Sort\n8.Shell Sort\n')
+    # Bucle hasta que el usuario elija una opción válida
     while eleg not in {"1", "2", "3", "4", "5", "6","7", "8", "9"}:
+        # Si el usuario no elige una opción válida, se imprime un mensaje de error y se repite el bucle
         print("\nOpcion incorrecta")
+        # Se solicita al usuario que elija un método de ordenamiento
         eleg=input('\n¿Que metodo deseas utilizar?\n\n1.Burbuja\n2.Burbuja mejorado\n3.De seleccion\n4.De inserseccion\n5.Bucket\n6.Comb\n7.Counting Sort\n8.Shell Sort\n')
+    # Dependiendo de la opción elegida, se llama a la función correspondiente
     if eleg == "8":
+        # Si el usuario elige la opción 8, se llama a la función shell_sort
         sorted_arr = shell_sort(lista)
+        # Se imprime el arreglo ordenado
         print("Arreglo organizado:", sorted_arr)
     elif eleg == "7":
+        # Si el usuario elige la opción 7, se llama a la función countingSort
         sorted_arr = countingSort(lista)
+        # Se imprime el arreglo ordenado
         print("Arreglo organizado:", sorted_arr)
-    # Dependiendo de la opción elegida, llama a la función correspondiente
     elif eleg == "1":
-        showResult3(len(lista), lista)  # Llama a la función 'showResult3' con la longitud de la lista y la lista como argumentos
+        # Si el usuario elige la opción 1, se llama a la función showResult3 con la longitud de la lista y la lista como argumentos
+        showResult3(len(lista), lista)
     elif eleg == "2":
-        showResult4(len(lista), lista)  # Llama a la función 'showResult4' con la longitud de la lista y la lista como argumentos
+        # Si el usuario elige la opción 2, se llama a la función showResult4 con la longitud de la lista y la lista como argumentos
+        showResult4(len(lista), lista)
     elif eleg == "3":
-        showResult6(len(lista), lista)  # Llama a la función 'showResult6' con la longitud de la lista y la lista como argumentos
+        # Si el usuario elige la opción 3, se llama a la función showResult6 con la longitud de la lista y la lista como argumentos
+        showResult6(len(lista), lista)
     elif eleg == "4":
-        showResult5(len(lista), lista)  # Llama a la función 'showResult5' con la longitud de la lista y la lista como argumentos
+        # Si el usuario elige la opción 4, se llama a la función showResult5 con la longitud de la lista y la lista como argumentos
+        showResult5(len(lista), lista)
     elif eleg == "5":
-        showResult(len(lista), lista)  # Llama a la función 'showResult' con la longitud de la lista y la lista como argumentos
+        # Si el usuario elige la opción 5, se llama a la función showResult con la longitud de la lista y la lista como argumentos
+        showResult(len(lista), lista)
     elif eleg == "6":
         showResult2(len(lista), lista)  # Llama a la función 'showResult2' con la longitud de la lista y la lista como argumentos
 
