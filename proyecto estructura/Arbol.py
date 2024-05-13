@@ -22,3 +22,12 @@ def inorder_traversal(root, result, counter):
         result.append(root.value)
         counter['movements'] += 1
         inorder_traversal(root.right, result, counter)
+
+def binary_tree_sort(arr):
+    root = None
+    counter = {'interactions': 0, 'movements': 0}
+    for value in arr:
+        root = insert(root, value, counter)
+    result = []
+    inorder_traversal(root, result, counter)
+    return result, counter
