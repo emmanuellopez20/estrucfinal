@@ -4,14 +4,15 @@ from Arbol import insert, inorder_traversal  # Importa las funciones 'insert' e 
 import matplotlib.pyplot as plt  # Importa matplotlib.pyplot para crear gráficos
 import networkx as nx  # Importa networkx para la creación, manipulación y estudio de la estructura de redes complejas
 from avltree import AVLTree
+import re
 
 # Inicializa varios diccionarios y listas
-usuarios = {}
-contrasenas = {}
-biblio = {}
+usuarios = {i: ' '*8 for i in range(8)}
+contrasenas = {i: ' '*8 for i in range(8)}
+posicion = 0
 end = 0
 list2 = []
-passwrd = []
+
 
 # Función del menú principal
 def menu():
@@ -37,41 +38,47 @@ def menu():
 
 # Función del menú de ordenamiento
 def menu_ord():
-    lista = []  # Declara la lista a utilizar
-    ele = int(input("Cuantos elementos desea insertar: "))  # Solicita al usuario el número de elementos a insertar
-    elements_input = input("Inserte los elementos de la lista: ")  # Solicita al usuario los elementos de la lista
-    elements = elements_input.split()  # Divide la cadena de entrada en elementos individuales usando espacios como delimitador
-    for element in elements:
+    lista = []
+    while True:
         try:
-            num = int(element)  # Convierte cada elemento en un entero
-            lista.append(num)  # Agrega el elemento a la lista
-        except ValueError:  # Si el elemento no es un entero válido, imprime un mensaje de error y sale de la función
-            print(f"Error: '{element}' no es un entero válido")
-            return
-    print('\nLista original', lista)  # Imprime la lista original
-
-    # Solicita al usuario que elija un método de ordenamiento
-    eleg=input('\n¿Que metodo deseas utilizar?\n\n1.Burbuja\n2.Burbuja mejorado\n3.selection\n4.Insert\n5.Merge\n6.Bucket\n7.Comb\n')
-    # Mientras la opción ingresada no sea válida, solicita al usuario que ingrese una opción válida
-    while eleg not in {"1", "2", "3", "4", "5", "6","7", "8"}:
+            ele = int(input("Cuantos elementos desea insertar: "))
+            break
+        except ValueError:
+            print("Por favor, ingresa un número entero.")
+    while len(lista) < ele:
+        elements_input = input("Inserte los elementos de la lista: ")
+        elements = elements_input.split()
+        for element in elements:
+            try:
+                num = int(element)
+                lista.append(num)
+                if len(lista) == ele:
+                    break
+            except ValueError:
+                print(f"Error: '{element}' no es un entero válido. Por favor, ingresa solo números enteros.")
+    print('\nLista original', lista)
+    eleg=input('\n¿Que metodo deseas utilizar?\n\n1.Burbuja\n2.Burbuja mejorado\n3.selection\n4.Insert\n5.Bucket\n6.Comb\n7.Counting Sort\n8.Shell Sort\n')
+    while eleg not in {"1", "2", "3", "4", "5", "6","7", "8", "9"}:
         print("\nOpcion incorrecta")
-        eleg=input('\n¿Que metodo deseas utilizar?\n\n1.Burbuja\n2.Burbuja mejorado\n3.De seleccion\n4.De inserseccion\n5.Por mezcla\n7.Bucket\n8.Comb\n')
-    # Dependiendo de la opción elegida, llama a la función correspondiente
-    if eleg == "1":
-        showResult3(len(lista), lista)  # Llama a la función 'showResult3' con la longitud de la lista y la lista como argumentos
-    if eleg == "2":
-         showResult4(len(lista), lista)  # Llama a la función 'showResult4' con la longitud de la lista y la lista como argumentos
-    if eleg == "3":
-        showResult6(len(lista), lista)  # Llama a la función 'showResult6' con la longitud de la lista y la lista como argumentos
-    if eleg == "4":
-        showResult5(len(lista), lista)  # Llama a la función 'showResult5' con la longitud de la lista y la lista como argumentos
-    if eleg == "5":
-        ordenada, iteracio, compar, movimient = merge_sort(lista)  # Llama a la función de ordenamiento de mezcla
-        print("Lista ordenada: ", ordenada)  # Imprime la lista ordenada
-        print(f'\nAqui esta tu lista ordenada en {iteracio} iteraciones, {movimient} movimientos y {compar} consultas de manera ascendente:\n ')
-    elif eleg == "6":
-        showResult(len(lista), lista)  # Llama a la función 'showResult' con la longitud de la lista y la lista como argumentos
+        eleg=input('\n¿Que metodo deseas utilizar?\n\n1.Burbuja\n2.Burbuja mejorado\n3.De seleccion\n4.De inserseccion\n5.Bucket\n6.Comb\n7.Counting Sort\n8.Shell Sort\n')
+    if eleg == "8":
+        sorted_arr = shell_sort(lista)
+        print("Arreglo organizado:", sorted_arr)
     elif eleg == "7":
+        sorted_arr = countingSort(lista)
+        print("Arreglo organizado:", sorted_arr)
+    # Dependiendo de la opción elegida, llama a la función correspondiente
+    elif eleg == "1":
+        showResult3(len(lista), lista)  # Llama a la función 'showResult3' con la longitud de la lista y la lista como argumentos
+    elif eleg == "2":
+        showResult4(len(lista), lista)  # Llama a la función 'showResult4' con la longitud de la lista y la lista como argumentos
+    elif eleg == "3":
+        showResult6(len(lista), lista)  # Llama a la función 'showResult6' con la longitud de la lista y la lista como argumentos
+    elif eleg == "4":
+        showResult5(len(lista), lista)  # Llama a la función 'showResult5' con la longitud de la lista y la lista como argumentos
+    elif eleg == "5":
+        showResult(len(lista), lista)  # Llama a la función 'showResult' con la longitud de la lista y la lista como argumentos
+    elif eleg == "6":
         showResult2(len(lista), lista)  # Llama a la función 'showResult2' con la longitud de la lista y la lista como argumentos
 
 # Función de ordenamiento de árbol binario interactivo
@@ -343,43 +350,6 @@ def showResult5(n, a):
 
     print('\n', res[0])  # Imprime la lista ordenada
 
-# Ordenamiento por mezcla
-def merge_sort(lista):
-    iteracio = 0  # Contador de iteraciones
-    compar = 0  # Contador de comparaciones
-    movimient = 0  # Contador de movimientos
-    if len(lista) > 1:  # Si la longitud de la lista es mayor que 1
-        mid = len(lista) // 2  # Calcula el punto medio de la lista
-        left_half = lista[:mid]  # Divide la lista en la mitad izquierda
-        right_half = lista[mid:]  # Divide la lista en la mitad derecha
-        left_half, left_iter, left_comp, left_mov = merge_sort(left_half)  # Llama recursivamente a la función de ordenamiento por mezcla para la mitad izquierda
-        right_half, right_iter, right_comp, right_mov = merge_sort(right_half)  # Llama recursivamente a la función de ordenamiento por mezcla para la mitad derecha
-        iteracio += left_iter + right_iter  # Suma las iteraciones de las mitades izquierda y derecha
-        compar += left_comp + right_comp  # Suma las comparaciones de las mitades izquierda y derecha
-        movimient += left_mov + right_mov  # Suma los movimientos de las mitades izquierda y derecha
-        i = j = k = 0  # Inicializa los contadores i, j y k
-        while i < len(left_half) and j < len(right_half):  # Mientras i sea menor que la longitud de la mitad izquierda y j sea menor que la longitud de la mitad derecha
-            compar += 1  # Incrementa el contador de comparaciones
-            if left_half[i] < right_half[j]:  # Si el elemento de la mitad izquierda es menor que el elemento de la mitad derecha
-                lista[k] = left_half[i]  # Asigna el elemento de la mitad izquierda a la lista
-                i += 1  # Incrementa i
-            else:
-                lista[k] = right_half[j]  # Asigna el elemento de la mitad derecha a la lista
-                j += 1  # Incrementa j
-            k += 1  # Incrementa k
-            movimient += 1  # Incrementa el contador de movimientos
-        while i < len(left_half):  # Mientras i sea menor que la longitud de la mitad izquierda
-            lista[k] = left_half[i]  # Asigna el elemento de la mitad izquierda a la lista
-            i += 1  # Incrementa i
-            k += 1  # Incrementa k
-            movimient += 1  # Incrementa el contador de movimientos
-        while j < len(right_half):  # Mientras j sea menor que la longitud de la mitad derecha
-            lista[k] = right_half[j]  # Asigna el elemento de la mitad derecha a la lista
-            j += 1  # Incrementa j
-            k += 1  # Incrementa k
-            movimient += 1  # Incrementa el contador de movimientos
-        iteracio += 1  # Incrementa el contador de iteraciones
-    return (lista, iteracio, compar, movimient)  # Devuelve la lista y los contadores
 
 # Ordenamiento por cubetas
 def bucket(n : int, arr : list2):
@@ -492,7 +462,45 @@ def showResult2(n, a):
 
     print('\n', res[0])  # Imprime la lista ordenada
 
-#def menu_arb():
+def countingSort(arr):
+    size = len(arr)
+    max_value = max(arr)
+    comparaciones = 0
+    movimientos = 0
+    iteraciones = 0
+    count = [0] * (max_value + 1)
+    output = [0] * size
+    for m in arr:
+        count[m] += 1
+        iteraciones += 1
+    for m in range(1, max_value + 1):
+        count[m] += count[m - 1]
+        iteraciones += 1
+    for m in range(size - 1, -1, -1):
+        output[count[arr[m]] - 1] = arr[m]
+        count[arr[m]] -= 1
+        movimientos += 1
+        comparaciones += 1
+        iteraciones += 1
+    print("Iteraciones :", iteraciones)
+    print("Movimientos :", movimientos)
+    print("Comparaciones :", comparaciones)
+    return output
+
+def shell_sort(arr):
+    n = len(arr)
+    gap = n // 2
+    while gap > 0:
+        for i in range(gap, n):
+            temp = arr[i]
+            j = i
+            while j >= gap and arr[j - gap] > temp:
+                arr[j] = arr[j - gap]
+                j -= gap
+            arr[j] = temp
+        gap //= 2
+    return arr
+
 
 
 #-------------------------Funcion login-----------------------------------------#    
@@ -500,106 +508,135 @@ def showResult2(n, a):
 
 
 #Eliminar usuarios del registro#
+# Función para eliminar un usuario
 def delet():
     print("<--|ELIMINAR REGISTRO|-->")
-    u1 = input("Ingrese el usuario que deasea eliminar:")  # Solicita al usuario que ingrese el nombre de usuario que desea eliminar
-
-    if u1 in usuarios.keys():  # Evalúa si el usuario existe
+    u1 = input("Ingrese el usuario que desea eliminar: ")  # Solicita al usuario que ingrese el nombre de usuario que desea eliminar
+    u1 = u1.ljust(8)  # Añade espacios al nombre del usuario hasta que tenga una longitud de 8 caracteres
+    if u1 in usuarios.values():  # Evalúa si el usuario existe
         C = input("Ingresa la contraseña por favor: ")  # Solicita al usuario que ingrese la contraseña
-        if C == contrasenas[u1]:  # Evalúa si la contraseña es correcta y corresponde
-            os.system('cls')  # Limpia la consola
-            dlt(u1)  # Llama a la función "dlt"
+        posicion = list(usuarios.values()).index(u1)
+        if C == contrasenas[posicion]:  # Evalúa si la contraseña es correcta y corresponde
+            dlt(posicion)  # Llama a la función "dlt"
         else:
-            os.system('cls')  # Limpia la consola
             print("\nCONTRASEÑA INCORRECTA. VUELVA A INTENTARLO")  # Informa al usuario que la contraseña es incorrecta
             delet()  # Llama a la función "delet"
     else:
-        os.system('cls')  # Limpia la consola
         print("\nUSUARIO INEXISTENTE")  # Informa al usuario que el usuario no existe
 
-def dlt(u1):
+# Función para eliminar un usuario de los diccionarios
+def dlt(posicion):
     # Elimina el usuario de los diccionarios
-    del usuarios[u1]  # Elimina el usuario del diccionario de usuarios
-    del contrasenas[u1]  # Elimina el usuario del diccionario de contraseñas
-    print("<--|USUARIO ELIMINADO EXITOSAMENTE-->>")  # Informa al usuario que el usuario ha sido eliminado exitosamente
-    time.sleep(2)  # Espera 2 segundos
-    os.system('cls')  # Limpia la consola
+    usuarios[posicion] = ' '*8  # Establece el usuario en el diccionario de usuarios en ' '*8
+    contrasenas[posicion] = ' '*8  # Establece el usuario en el diccionario de contraseñas en ' '*8
+    os.remove(f"{posicion}_security.txt")  # Elimina el archivo de respuestas de seguridad del usuario
+    print("<--|USUARIO ELIMINADO EXITOSAMENTE-->>")  # Informa al usuario que el usuario ha sido eliminado exitosamenteforma al usuario que el usuario ha sido eliminado exitosamente
 
-#Login
+
+# Función para iniciar sesión
 def login():
-    i = 0  # Inicializa el contador i
     P = input("Ingresa tu usuario ya registrado: ")  # Solicita al usuario que ingrese un usuario ya registrado
-    if P in usuarios.keys():  # Si el usuario existe en el diccionario de usuarios
+    P = P.ljust(8)  # Añade espacios al nombre del usuario hasta que tenga una longitud de 8 caracteres
+    if P in usuarios.values():  # Si el usuario existe en el diccionario de usuarios
         C = input("Ingresa su Contraseña: ")  # Solicita al usuario que ingrese la contraseña
-        if C == contrasenas[P]:  # Si la contraseña ingresada coincide con la contraseña almacenada en el diccionario para ese usuario
-            os.system('cls')  # Limpia la consola
+        posicion = list(usuarios.values()).index(P)
+        if C == contrasenas[posicion]:  # Si la contraseña ingresada coincide con la contraseña almacenada en el diccionario para ese usuario
+            print("\nlogin exitoso\n")
             menu()  # Llama a la función del menú
         else:
             print("\nCONTRASEÑA INCORRECTA. VUELVA A INTENTARLO PORFAVOR")  # Informa al usuario que la contraseña es incorrecta
-            os.system('cls')  # Limpia la consola
-            time.sleep(2)  # Espera 2 segundos
             login()  # Llama a la función de inicio de sesión
     else:
         print("\nUSUARIO INEXISTENTE. VUELVA A INTENTARLO PORFAVOR")  # Informa al usuario que el usuario no existe
-        time.sleep(2)  # Espera 2 segundos
-        os.system('cls')  # Limpia la consola
-        return  # Sale de la función
-
 
 # Función para registrar la contraseña
-def regC(P):
-    global usuarios  # Accede a la variable global 'usuarios'
-    global contrasenas  # Accede a la variable global 'contrasenas'
-    counter = len(usuarios)  # Cuenta la cantidad de usuarios existentes
-    strC = str(counter)  # Convierte el contador a una cadena
-    C = input("Ingresa su Contraseña (8 caracteres exactos): ")  # Solicita al usuario que ingrese una contraseña de exactamente 8 caracteres
-    if len(C) == 8:  # Si la longitud de la contraseña es 8
-        usuarios[P] = P  # Almacena el nombre de usuario en el diccionario de usuarios
-        contrasenas[P] = C  # Almacena la contraseña en el diccionario de contraseñas
-        os.system('cls')  # Limpia la consola
-    else:  # Si la longitud de la contraseña no es 8
-        print("\nCONTRASEÑA INVÁLIDA")  # Informa al usuario que la contraseña es inválida
-        time.sleep(2)  # Espera 2 segundos
-        os.system('cls')  # Limpia la consola
-        regC(P)  # Llama a la función 'regC' para solicitar al usuario que ingrese una contraseña válida
+def regC():
+    C = input("Ingresa su Contraseña (8 caracteres exactos): ")
+    if len(C) != 8 or not re.search("\d", C) or not re.search("\W", C):
+        print("\nCONTRASEÑA INVÁLIDA. DEBE TENER EXACTAMENTE 8 CARACTERES, AL MENOS UN NÚMERO Y AL MENOS UN CARÁCTER ESPECIAL.")
+        regC()
+    else:
+        return C
+
 
 # Función para registrar un usuario
 def reg():
-    print("\n<--|REGISTRO|-->")  # Imprime un mensaje de bienvenida al registro
-    global usuarios  # Accede a la variable global 'usuarios'
-    global contrasenas  # Accede a la variable global 'contrasenas'
-    P = input("Ingresa tu usuario: ")  # Solicita al usuario que ingrese un nombre de usuario
-    
-    if P not in usuarios.keys():  # Si el nombre de usuario no existe en el diccionario de usuarios
-        usuarios[P] = P  # Almacena el nombre de usuario en el diccionario de usuarios
-        regC(P)  # Llama a la función 'regC' para registrar la contraseña
-    else:  # Si el nombre de usuario ya existe en el diccionario de usuarios
-        print("\nUSUARIO YA REGISTRADO. VUELVA A INTENTARLO PORFAVOR")  # Informa al usuario que el nombre de usuario ya está registrado
-        os.system('cls')  # Limpia la consola
-        reg()  # Llama a la función 'reg' para solicitar al usuario que ingrese un nombre de usuario diferente
+    print("\n<--|REGISTRO|-->")
+    P = input("Ingresa tu usuario: ")
+    P = P.ljust(8)  # Añade espacios al nombre del usuario hasta que tenga una longitud de 8 caracteres
+    if not P.strip().isalnum():  # Usa strip() para eliminar los espacios antes de comprobar si el nombre de usuario es alfanumérico
+        print("\nUSUARIO INVÁLIDO. SOLO SE PERMITEN LETRAS Y NÚMEROS.")
+        reg()
+    elif P not in usuarios.values():  # Comprueba si el usuario ya existe en el diccionario de usuarios
+        # Busca la primera posición vacía en el diccionario de usuarios
+        posicion = list(usuarios.values()).index(' '*8)
+        usuarios[posicion] = P
+        contrasenas[posicion] = regC()
+        SecP(posicion)  # Llama a la función SecP para registrar las respuestas a las preguntas de seguridad
+    else:
+        print("\nUSUARIO YA REGISTRADO. VUELVA A INTENTARLO PORFAVOR")
+        reg()
 
+#funcion para imprimir usuario
+def imprimir_diccionarios():
+    print("Usuarios:")
+    for i in range(8):
+        print([char for char in usuarios[i]])
+
+    print("\nContraseñas:")
+    for i in range(8):
+        print([char for char in contrasenas[i]])
+
+# Función para registrar las respuestas a las preguntas de seguridad
+def SecP(posicion):
+    Q = input("Primera pregunta: Cual es tu ciudad de nacimiento?")
+    Q2 = input("Segunda pregunta: Cual es tu numero favorito?\n")
+    with open(f"{posicion}_security.txt", "w") as file:  # Crea un archivo .txt con el nombre del usuario
+        file.write(Q + "\n")  # Escribe la primera respuesta en el archivo
+        file.write(Q2 + "\n")  # Escribe la segunda respuesta en el archivo
+    print("\n<<--REGISTRO COMPLETADO EXITOSAMENTE-->>")
+    
+# Función para restablecer la contraseña
+def reset_password():
+    P = input("Ingresa tu usuario: ")
+    P = P.ljust(8)  # Añade espacios al nombre del usuario hasta que tenga una longitud de 8 caracteres
+    if P in usuarios.values():  # Si el usuario existe en el diccionario de usuarios
+        posicion = list(usuarios.values()).index(P)
+        with open(f"{posicion}_security.txt", "r") as file:  # Abre el archivo .txt del usuario
+            Q = file.readline().strip()  # Lee la primera respuesta del archivo
+            Q2 = file.readline().strip()  # Lee la segunda respuesta del archivo
+        Q_user = input("Primera pregunta: Cual es tu ciudad de nacimiento?")
+        Q2_user = input("Segunda pregunta: Cual es tu numero favorito?\n")
+        if Q == Q_user and Q2 == Q2_user:  # Si las respuestas del usuario coinciden con las respuestas guardadas
+            new_password = regC()  # Solicita al usuario que ingrese una nueva contraseña
+            contrasenas[posicion] = new_password  # Actualiza la contraseña en el diccionario de contraseñas
+            print("\n<<--CONTRASEÑA ACTUALIZADA EXITOSAMENTE-->>")
+        else:
+            print("\nRESPUESTAS INCORRECTAS. INTÉNTALO DE NUEVO.")
+    else:
+        print("\nUSUARIO INEXISTENTE. VUELVA A INTENTARLO PORFAVOR")  # Informa al usuario que el usuario no existe
 
 
 # Función principal
 def main(end):
     while end == 0:  # Mientras 'end' sea 0, el programa continuará ejecutándose
-        a = input("\n<---BIENVENIDO--->\nEscoga una opción.\n \n<---1. Registrar usuario  \n<---2. Iniciar sesión  \n<---3. Eliminar usuario del registro\n<---4.Menu de ordenamientos \n<---5. Salir\n")  # Solicita al usuario que elija una opción
-        while a not in {"1", "2", "3", "4", "5","6"}:  # Mientras la opción elegida no sea válida
+        a = input("\n<---BIENVENIDO--->\nEscoga una opción.\n \n<---1. Registrar usuario  \n<---2. Iniciar sesión  \n<---3. Eliminar usuario del registro\n<---4.Menu de ordenamientos \n<---5.imprimir diccionarios\n<---6.Restablecer contraseña \n<---7. Salir\n")  # Solicita al usuario que elija una opción
+        while a not in {"1", "2", "3", "4", "5","6","7"}:  # Mientras la opción elegida no sea válida
             print("\nOPCIÓN INVÁLIDA")  # Informa al usuario que la opción es inválida
-            a = input("\n<---BIENVENIDO--->\nEscoga una opción.\n \n<---1. Registrar usuario  \n<---2. Iniciar sesión  \n<---3. Eliminar usuario del registro\n<---4.Menu de ordenamientos \n<---5. Salir\n")  # Solicita al usuario que elija una opción válida
+            a = input("\n<---BIENVENIDO--->\nEscoga una opción.\n \n<---1. Registrar usuario  \n<---2. Iniciar sesión  \n<---3. Eliminar usuario del registro\n<---4.Menu de ordenamientos \n<---5.imprimir diccionarios\n<---6.Restablecer contraseña \n<---7. Salir\n")  # Solicita al usuario que elija una opción válida
         if a == "1":  # Si la opción elegida es '1'
-            os.system('cls')  # Limpia la consola
             reg()  # Llama a la función 'reg' para registrar un usuario
         elif a == "2":  # Si la opción elegida es '2'
-            os.system('cls')  # Limpia la consola
             login()  # Llama a la función 'login' para iniciar sesión
         elif a == "3":  # Si la opción elegida es '3'
-            os.system('cls')  # Limpia la consola
             delet()  # Llama a la función 'delet' para eliminar un usuario del registro
         elif a == "4":  # Si la opción elegida es '4'
-           os.system('cls')  # Limpia la consola
-           menu()  # Llama a la función 'menu' para mostrar el menú de ordenamientos
+            menu()  # Llama a la función 'menu' para mostrar el menú de ordenamientos
         elif a == "5":  # Si la opción elegida es '5'
+            imprimir_diccionarios()
+        elif a == "6":  # Si la opción elegida es '6'
+            reset_password()
+        elif a == "7":  # Si la opción elegida es '7'
             print("\nTerminando sesion")  # Informa al usuario que la sesión está terminando
             end = 1  # Establece 'end' como 1 para terminar el programa
 
