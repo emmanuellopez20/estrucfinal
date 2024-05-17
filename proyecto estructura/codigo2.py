@@ -5,13 +5,15 @@ import matplotlib.pyplot as plt  # Importa matplotlib.pyplot para crear gráfico
 import networkx as nx  # Importa networkx para la creación, manipulación y estudio de la estructura de redes complejas
 from avltree import AVLTree
 import re
+import pprint
 
 # Inicializa varios diccionarios y listas
-usuarios = {i: ' '*8 for i in range(8)}
-contrasenas = {i: ' '*8 for i in range(8)}
+usuarios = [[' ' for _ in range(8)] for _ in range(8)]
+contrasenas = [[' ' for _ in range(8)] for _ in range(8)]
 posicion = 0
 end = 0
 list2 = []
+diccionario = {}
 
 
 # Función del menú principal
@@ -37,74 +39,47 @@ def menu():
         main(0)  # Llama a la función principal con 0 como argumento
 
 # Función del menú de ordenamiento
-# Definición de la función menu_ord
 def menu_ord():
-    # Se inicializa una lista vacía
     lista = []
-    # Bucle infinito hasta que el usuario ingrese un número entero
     while True:
         try:
-            # Se solicita al usuario que ingrese el número de elementos que desea insertar en la lista
             ele = int(input("Cuantos elementos desea insertar: "))
-            # Si el usuario ingresa un número entero, se rompe el bucle
             break
         except ValueError:
-            # Si el usuario no ingresa un número entero, se imprime un mensaje de error y se repite el bucle
             print("Por favor, ingresa un número entero.")
-    # Bucle hasta que la longitud de la lista sea igual al número de elementos que el usuario desea insertar
     while len(lista) < ele:
-        # Se solicita al usuario que ingrese los elementos de la lista, separados por espacios
-        elements_input = input("Inserte los elementos de la lista separados por espacios: ")
-        # Se divide la entrada del usuario en una lista de elementos
+        elements_input = input("Inserte los elementos de la lista: ")
         elements = elements_input.split()
-        # Bucle para cada elemento en la lista de elementos
         for element in elements:
             try:
-                # Se intenta convertir cada elemento en un número entero y se añade a la lista
                 num = int(element)
                 lista.append(num)
-                # Si la longitud de la lista es igual al número de elementos que el usuario desea insertar, se rompe el bucle
                 if len(lista) == ele:
                     break
             except ValueError:
-                # Si un elemento no se puede convertir en un número entero, se imprime un mensaje de error
                 print(f"Error: '{element}' no es un entero válido. Por favor, ingresa solo números enteros.")
-    # Se imprime la lista original
     print('\nLista original', lista)
-    # Se solicita al usuario que elija un método de ordenamiento
     eleg=input('\n¿Que metodo deseas utilizar?\n\n1.Burbuja\n2.Burbuja mejorado\n3.selection\n4.Insert\n5.Bucket\n6.Comb\n7.Counting Sort\n8.Shell Sort\n')
-    # Bucle hasta que el usuario elija una opción válida
     while eleg not in {"1", "2", "3", "4", "5", "6","7", "8", "9"}:
-        # Si el usuario no elige una opción válida, se imprime un mensaje de error y se repite el bucle
         print("\nOpcion incorrecta")
-        # Se solicita al usuario que elija un método de ordenamiento
         eleg=input('\n¿Que metodo deseas utilizar?\n\n1.Burbuja\n2.Burbuja mejorado\n3.De seleccion\n4.De inserseccion\n5.Bucket\n6.Comb\n7.Counting Sort\n8.Shell Sort\n')
-    # Dependiendo de la opción elegida, se llama a la función correspondiente
     if eleg == "8":
-        # Si el usuario elige la opción 8, se llama a la función shell_sort
         sorted_arr = shell_sort(lista)
-        # Se imprime el arreglo ordenado
         print("Arreglo organizado:", sorted_arr)
     elif eleg == "7":
-        # Si el usuario elige la opción 7, se llama a la función countingSort
         sorted_arr = countingSort(lista)
-        # Se imprime el arreglo ordenado
         print("Arreglo organizado:", sorted_arr)
+    # Dependiendo de la opción elegida, llama a la función correspondiente
     elif eleg == "1":
-        # Si el usuario elige la opción 1, se llama a la función showResult3 con la longitud de la lista y la lista como argumentos
-        showResult3(len(lista), lista)
+        showResult3(len(lista), lista)  # Llama a la función 'showResult3' con la longitud de la lista y la lista como argumentos
     elif eleg == "2":
-        # Si el usuario elige la opción 2, se llama a la función showResult4 con la longitud de la lista y la lista como argumentos
-        showResult4(len(lista), lista)
+        showResult4(len(lista), lista)  # Llama a la función 'showResult4' con la longitud de la lista y la lista como argumentos
     elif eleg == "3":
-        # Si el usuario elige la opción 3, se llama a la función showResult6 con la longitud de la lista y la lista como argumentos
-        showResult6(len(lista), lista)
+        showResult6(len(lista), lista)  # Llama a la función 'showResult6' con la longitud de la lista y la lista como argumentos
     elif eleg == "4":
-        # Si el usuario elige la opción 4, se llama a la función showResult5 con la longitud de la lista y la lista como argumentos
-        showResult5(len(lista), lista)
+        showResult5(len(lista), lista)  # Llama a la función 'showResult5' con la longitud de la lista y la lista como argumentos
     elif eleg == "5":
-        # Si el usuario elige la opción 5, se llama a la función showResult con la longitud de la lista y la lista como argumentos
-        showResult(len(lista), lista)
+        showResult(len(lista), lista)  # Llama a la función 'showResult' con la longitud de la lista y la lista como argumentos
     elif eleg == "6":
         showResult2(len(lista), lista)  # Llama a la función 'showResult2' con la longitud de la lista y la lista como argumentos
 
@@ -149,31 +124,31 @@ def visualize_binary_tree(root):
     plt.ion()  # Habilita el modo interactivo
     plt.show()  # Muestra la figura
 
-def interact_with_avl_tree():  # Definición de la función interact_with_avl_tree
-    avl = AVLTree()  # Inicializa un nuevo árbol AVL
-    while True:  # Inicia un bucle infinito
-        print("\nSubmenú del Árbol AVL")  # Imprime el submenú del árbol AVL
-        print("1. Insertar elementos")  # Opción para insertar elementos
-        print("2. Eliminar un elemento")  # Opción para eliminar un elemento
-        print("3. Mostrar el árbol")  # Opción para mostrar el árbol
-        print("4. Regresar al menú principal")  # Opción para regresar al menú principal
-        option = input("Elige una opción: ")  # Solicita al usuario que elija una opción
-        if option == "1":  # Si el usuario elige la opción 1, ejecuta el siguiente bloque de código
-            elements = input("Ingresa los elementos a insertar separados por espacios: ")  # Solicita al usuario que ingrese los elementos a insertar
-            elements = list(map(int, elements.split()))  # Convierte la entrada del usuario en una lista de números enteros
-            for element in elements:  # Recorre cada elemento en la lista de elementos
-                avl.insert(element)  # Inserta el elemento en el árbol AVL
-                print(avl)  # Imprime el árbol AVL
-        elif option == "2":  # Si el usuario elige la opción 2, ejecuta el siguiente bloque de código
-            element = int(input("Ingresa el elemento a eliminar: "))  # Solicita al usuario que ingrese el elemento a eliminar
-            avl.delete_value(element)  # Elimina el elemento del árbol AVL
-            print(avl)  # Imprime el árbol AVL
-        elif option == "3":  # Si el usuario elige la opción 3, ejecuta el siguiente bloque de código
-            print(avl)  # Imprime el árbol AVL
-        elif option == "4":  # Si el usuario elige la opción 4, ejecuta el siguiente bloque de código
-            break  # Rompe el bucle
-        else:  # Si el usuario no elige una opción válida, ejecuta el siguiente bloque de código
-            print("Opción inválida. Por favor, intenta de nuevo.")  # Imprime un mensaje de error
+def interact_with_avl_tree():
+    avl = AVLTree()
+    while True:
+        print("\nSubmenú del Árbol AVL")
+        print("1. Insertar elementos")
+        print("2. Eliminar un elemento")
+        print("3. Mostrar el árbol")
+        print("4. Regresar al menú principal")
+        option = input("Elige una opción: ")
+        if option == "1":
+            elements = input("Ingresa los elementos a insertar separados por espacios: ")
+            elements = list(map(int, elements.split()))
+            for element in elements:
+                avl.insert(element)
+                print(avl)
+        elif option == "2":
+            element = int(input("Ingresa el elemento a eliminar: "))
+            avl.delete_value(element)
+            print(avl)
+        elif option == "3":
+            print(avl)
+        elif option == "4":
+            break
+        else:
+            print("Opción inválida. Por favor, intenta de nuevo.")
 
 
 # Función de ordenamiento de burbuja
@@ -489,75 +464,43 @@ def showResult2(n, a):
 
     print('\n', res[0])  # Imprime la lista ordenada
 
-def countingSort(arr):  # Definición de la función countingSort
-    size = len(arr)  # Obtiene la longitud del arreglo
-    max_value = max(arr)  # Obtiene el valor máximo en el arreglo
-    comparaciones = 0  # Inicializa el contador de comparaciones a 0
-    movimientos = 0  # Inicializa el contador de movimientos a 0
-    iteraciones = 0  # Inicializa el contador de iteraciones a 0
-    count = [0] * (max_value + 1)  # Inicializa un arreglo de conteo con una longitud igual al valor máximo más 1
-    output = [0] * size  # Inicializa un arreglo de salida con una longitud igual a la longitud del arreglo
-    for m in arr:  # Recorre cada elemento en el arreglo
-        count[m] += 1  # Incrementa el valor en el índice m del arreglo de conteo
-        iteraciones += 1  # Incrementa el contador de iteraciones
-    for m in range(1, max_value + 1):  # Recorre cada número desde 1 hasta el valor máximo
-        count[m] += count[m - 1]  # Suma el valor en el índice m - 1 del arreglo de conteo al valor en el índice m
-        iteraciones += 1  # Incrementa el contador de iteraciones
-    for m in range(size - 1, -1, -1):  # Recorre cada índice desde el último hasta el primero en el arreglo
-        output[count[arr[m]] - 1] = arr[m]  # Asigna el valor en el índice m del arreglo al índice count[arr[m]] - 1 del arreglo de salida
-        count[arr[m]] -= 1  # Decrementa el valor en el índice arr[m] del arreglo de conteo
-        movimientos += 1  # Incrementa el contador de movimientos
-        comparaciones += 1  # Incrementa el contador de comparaciones
-        iteraciones += 1  # Incrementa el contador de iteraciones
-    print("Iteraciones :", iteraciones)  # Imprime el número de iteraciones
-    print("Movimientos :", movimientos)  # Imprime el número de movimientos
-    print("Comparaciones :", comparaciones)  # Imprime el número de comparaciones
-    return output  # Retorna el arreglo ordenado
+def countingSort(arr):
+    size = len(arr)
+    max_value = max(arr)
+    comparaciones = 0
+    movimientos = 0
+    iteraciones = 0
+    count = [0] * (max_value + 1)
+    output = [0] * size
+    for m in arr:
+        count[m] += 1
+        iteraciones += 1
+    for m in range(1, max_value + 1):
+        count[m] += count[m - 1]
+        iteraciones += 1
+    for m in range(size - 1, -1, -1):
+        output[count[arr[m]] - 1] = arr[m]
+        count[arr[m]] -= 1
+        movimientos += 1
+        comparaciones += 1
+        iteraciones += 1
+    print("Iteraciones :", iteraciones)
+    print("Movimientos :", movimientos)
+    print("Comparaciones :", comparaciones)
+    return output
 
 def shell_sort(arr):
-    # Obtiene la longitud del arreglo
     n = len(arr)
-    # Inicializa la brecha a la mitad de la longitud del arreglo
     gap = n // 2
-
-    # Inicializa los contadores
-    iters = 0  # Iteraciones
-    query = 0  # Consultas
-    compa = 0  # Comparaciones
-    swaps = 0  # Intercambios
-
-    # Inicia un bucle que se ejecuta hasta que la brecha sea 0
     while gap > 0:
-        # Recorre cada elemento en el arreglo a partir de la brecha
         for i in range(gap, n):
-            # Almacena el valor del elemento actual en una variable temporal
             temp = arr[i]
             j = i
-            # Inicia un bucle que se ejecuta hasta que j sea menor que la brecha o el elemento en la posición j - brecha sea menor o igual que temp
             while j >= gap and arr[j - gap] > temp:
-                # Asigna el valor del elemento en la posición j - brecha al elemento en la posición j
                 arr[j] = arr[j - gap]
                 j -= gap
-                # Incrementa el contador de intercambios
-                swaps += 1
-                # Incrementa el contador de comparaciones
-                compa += 1
-            # Asigna el valor de temp al elemento en la posición j
             arr[j] = temp
-            # Incrementa el contador de iteraciones
-            iters += 1
-        # Divide la brecha por 2
         gap //= 2
-        # Incrementa el contador de consultas
-        query += 1
-
-    # Imprime los contadores
-    print("Iteraciones :", iters)
-    print("Consultas (querys):", query)
-    print("Comparaciones :", compa)
-    print("Intercambios (swaps):", swaps)
-
-    # Retorna el arreglo ordenado
     return arr
 
 
@@ -566,22 +509,25 @@ def shell_sort(arr):
 
 
 
-#Eliminar usuarios del registro#
+
 # Función para eliminar un usuario
 def delet():
     print("<--|ELIMINAR REGISTRO|-->")
-    u1 = input("Ingrese el usuario que desea eliminar: ")  # Solicita al usuario que ingrese el nombre de usuario que desea eliminar
-    u1 = u1.ljust(8)  # Añade espacios al nombre del usuario hasta que tenga una longitud de 8 caracteres
-    if u1 in usuarios.values():  # Evalúa si el usuario existe
+    P = input("Ingrese el usuario que desea eliminar: ")  # Solicita al usuario que ingrese el nombre de usuario que desea eliminar
+    if P in diccionario:  # Evalúa si el usuario existe en el diccionario
         C = input("Ingresa la contraseña por favor: ")  # Solicita al usuario que ingrese la contraseña
-        posicion = list(usuarios.values()).index(u1)
-        if C == contrasenas[posicion]:  # Evalúa si la contraseña es correcta y corresponde
-            dlt(posicion)  # Llama a la función "dlt"
+        if C == diccionario[P]:  # Evalúa si la contraseña es correcta y corresponde
+            posicion = next(i for i, fila in enumerate(usuarios) if ''.join(fila).strip() == P)
+            usuarios[posicion] = list(' '*8)  # Elimina el usuario de la matriz de usuarios
+            contrasenas[posicion] = list(' '*8)  # Elimina la contraseña de la matriz de contraseñas
+            del diccionario[P]  # Elimina el usuario del diccionario
+            guardar_datos()  # Guarda los datos en el archivo txt
+            print("\n<<--USUARIO ELIMINADO EXITOSAMENTE-->>")
         else:
             print("\nCONTRASEÑA INCORRECTA. VUELVA A INTENTARLO")  # Informa al usuario que la contraseña es incorrecta
             delet()  # Llama a la función "delet"
     else:
-        print("\nUSUARIO INEXISTENTE")  # Informa al usuario que el usuario no existe
+        print("\nUSUARIO INEXISTENTE") 
 
 # Función para eliminar un usuario de los diccionarios
 def dlt(posicion):
@@ -594,12 +540,10 @@ def dlt(posicion):
 
 # Función para iniciar sesión
 def login():
-    P = input("Ingresa tu usuario ya registrado: ")  # Solicita al usuario que ingrese un usuario ya registrado
-    P = P.ljust(8)  # Añade espacios al nombre del usuario hasta que tenga una longitud de 8 caracteres
-    if P in usuarios.values():  # Si el usuario existe en el diccionario de usuarios
+    P = input("Ingresa tu usuario ya registrado: ")
+    if P in diccionario:  # Si el usuario existe en el diccionario
         C = input("Ingresa su Contraseña: ")  # Solicita al usuario que ingrese la contraseña
-        posicion = list(usuarios.values()).index(P)
-        if C == contrasenas[posicion]:  # Si la contraseña ingresada coincide con la contraseña almacenada en el diccionario para ese usuario
+        if C == diccionario[P]:  # Si la contraseña ingresada coincide con la contraseña almacenada en el diccionario para ese usuario
             print("\nlogin exitoso\n")
             menu()  # Llama a la función del menú
         else:
@@ -608,6 +552,7 @@ def login():
     else:
         print("\nUSUARIO INEXISTENTE. VUELVA A INTENTARLO PORFAVOR")  # Informa al usuario que el usuario no existe
 
+
 # Función para registrar la contraseña
 def regC():
     C = input("Ingresa su Contraseña (8 caracteres exactos): ")
@@ -615,6 +560,7 @@ def regC():
         print("\nCONTRASEÑA INVÁLIDA. DEBE TENER EXACTAMENTE 8 CARACTERES, AL MENOS UN NÚMERO Y AL MENOS UN CARÁCTER ESPECIAL.")
         regC()
     else:
+        guardar_datos()
         return C
 
 
@@ -626,25 +572,30 @@ def reg():
     if not P.strip().isalnum():  # Usa strip() para eliminar los espacios antes de comprobar si el nombre de usuario es alfanumérico
         print("\nUSUARIO INVÁLIDO. SOLO SE PERMITEN LETRAS Y NÚMEROS.")
         reg()
-    elif P not in usuarios.values():  # Comprueba si el usuario ya existe en el diccionario de usuarios
-        # Busca la primera posición vacía en el diccionario de usuarios
-        posicion = list(usuarios.values()).index(' '*8)
-        usuarios[posicion] = P
-        contrasenas[posicion] = regC()
+    elif P not in [''.join(fila) for fila in usuarios]:  # Comprueba si el usuario ya existe en la matriz
+        # Busca la primera fila vacía en la matriz de usuarios
+        posicion = next(i for i, fila in enumerate(usuarios) if ''.join(fila).strip() == '')
+        usuarios[posicion] = list(P)
+        contrasenas[posicion] = list(regC())
         SecP(posicion)  # Llama a la función SecP para registrar las respuestas a las preguntas de seguridad
+        guardar_datos()  # Guarda los datos en el archivo txt
+        diccionario[''.join(usuarios[posicion]).strip()] = ''.join(contrasenas[posicion]).strip()  # Actualiza el diccionario
     else:
         print("\nUSUARIO YA REGISTRADO. VUELVA A INTENTARLO PORFAVOR")
         reg()
 
 
-def imprimir_diccionarios():  # Definición de la función imprimir_diccionarios
-    print("Usuarios:")  # Imprime "Usuarios:"
-    for i in range(8):  # Recorre cada número desde 0 hasta 7
-        print([char for char in usuarios[i]])  # Imprime cada carácter en el índice i del arreglo usuarios
+def guardar_datos():
+    with open("usuarios.txt", "w") as f:
+        for fila in usuarios:
+            f.write(' '.join(fila) + "\n")
 
-    print("\nContraseñas:")  # Imprime "Contraseñas:"
-    for i in range(8):  # Recorre cada número desde 0 hasta 7
-        print([char for char in contrasenas[i]])  # Imprime cada carácter en el índice i del arreglo contraseñas
+    with open("contrasenas.txt", "w") as f:
+        for fila in contrasenas:
+            f.write(' '.join(fila) + "\n")
+
+
+
 
 # Función para registrar las respuestas a las preguntas de seguridad
 def SecP(posicion):
@@ -658,23 +609,35 @@ def SecP(posicion):
 # Función para restablecer la contraseña
 def reset_password():
     P = input("Ingresa tu usuario: ")
-    P = P.ljust(8)  # Añade espacios al nombre del usuario hasta que tenga una longitud de 8 caracteres
-    if P in usuarios.values():  # Si el usuario existe en el diccionario de usuarios
-        posicion = list(usuarios.values()).index(P)
+    posicion = next((i for i, fila in enumerate(usuarios) if ''.join(fila).strip() == P), None)
+    if posicion is not None:  # Si el usuario existe en la matriz
         with open(f"{posicion}_security.txt", "r") as file:  # Abre el archivo .txt del usuario
             Q = file.readline().strip()  # Lee la primera respuesta del archivo
             Q2 = file.readline().strip()  # Lee la segunda respuesta del archivo
         Q_user = input("Primera pregunta: Cual es tu ciudad de nacimiento?")
         Q2_user = input("Segunda pregunta: Cual es tu numero favorito?\n")
         if Q == Q_user and Q2 == Q2_user:  # Si las respuestas del usuario coinciden con las respuestas guardadas
-            new_password = regC()  # Solicita al usuario que ingrese una nueva contraseña
-            contrasenas[posicion] = new_password  # Actualiza la contraseña en el diccionario de contraseñas
+            new_password = list(regC())  # Solicita al usuario que ingrese una nueva contraseña
+            contrasenas[posicion] = new_password  # Actualiza la contraseña en la matriz
+            guardar_datos()  # Guarda los datos en el archivo txt
+            diccionario[''.join(usuarios[posicion]).strip()] = ''.join(contrasenas[posicion]).strip()  # Actualiza el diccionario
             print("\n<<--CONTRASEÑA ACTUALIZADA EXITOSAMENTE-->>")
         else:
             print("\nRESPUESTAS INCORRECTAS. INTÉNTALO DE NUEVO.")
     else:
-        print("\nUSUARIO INEXISTENTE. VUELVA A INTENTARLO PORFAVOR")  # Informa al usuario que el usuario no existe
+        print("\nUSUARIO INEXISTENTE. VUELVA A INTENTARLO PORFAVOR")  # Informa al usuario que el usuario no existe # Informa al usuario que el usuario no existe
 
+
+def imprimir_datos():
+    print("Matriz de usuarios:")
+    pprint.pprint(usuarios)
+
+    print("\nMatriz de contraseñas:")
+    pprint.pprint(contrasenas)
+
+    print("\nDiccionario de usuarios y contraseñas:")
+    for usuario, contrasena in diccionario.items():
+        print(f"Usuario: {usuario}, Contraseña: {contrasena}")
 
 # Función principal
 def main(end):
@@ -692,7 +655,7 @@ def main(end):
         elif a == "4":  # Si la opción elegida es '4'
             menu()  # Llama a la función 'menu' para mostrar el menú de ordenamientos
         elif a == "5":  # Si la opción elegida es '5'
-            imprimir_diccionarios()
+            imprimir_datos()
         elif a == "6":  # Si la opción elegida es '6'
             reset_password()
         elif a == "7":  # Si la opción elegida es '7'
