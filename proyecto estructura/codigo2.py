@@ -464,44 +464,78 @@ def showResult2(n, a):
 
     print('\n', res[0])  # Imprime la lista ordenada
 
-def countingSort(arr):
-    size = len(arr)
-    max_value = max(arr)
-    comparaciones = 0
-    movimientos = 0
-    iteraciones = 0
-    count = [0] * (max_value + 1)
-    output = [0] * size
-    for m in arr:
-        count[m] += 1
-        iteraciones += 1
-    for m in range(1, max_value + 1):
-        count[m] += count[m - 1]
-        iteraciones += 1
-    for m in range(size - 1, -1, -1):
-        output[count[arr[m]] - 1] = arr[m]
-        count[arr[m]] -= 1
-        movimientos += 1
-        comparaciones += 1
-        iteraciones += 1
-    print("Iteraciones :", iteraciones)
-    print("Movimientos :", movimientos)
-    print("Comparaciones :", comparaciones)
-    return output
+def countingSort(arr):  # Definición de la función countingSort
+    size = len(arr)  # Obtiene la longitud del arreglo
+    max_value = max(arr)  # Obtiene el valor máximo en el arreglo
+    comparaciones = 0  # Inicializa el contador de comparaciones a 0
+    movimientos = 0  # Inicializa el contador de movimientos a 0
+    iteraciones = 0  # Inicializa el contador de iteraciones a 0
+    count = [0] * (max_value + 1)  # Inicializa un arreglo de conteo con una longitud igual al valor máximo más 1
+    output = [0] * size  # Inicializa un arreglo de salida con una longitud igual a la longitud del arreglo
+    for m in arr:  # Recorre cada elemento en el arreglo
+        count[m] += 1  # Incrementa el valor en el índice m del arreglo de conteo
+        iteraciones += 1  # Incrementa el contador de iteraciones
+    for m in range(1, max_value + 1):  # Recorre cada número desde 1 hasta el valor máximo
+        count[m] += count[m - 1]  # Suma el valor en el índice m - 1 del arreglo de conteo al valor en el índice m
+        iteraciones += 1  # Incrementa el contador de iteraciones
+    for m in range(size - 1, -1, -1):  # Recorre cada índice desde el último hasta el primero en el arreglo
+        output[count[arr[m]] - 1] = arr[m]  # Asigna el valor en el índice m del arreglo al índice count[arr[m]] - 1 del arreglo de salida
+        count[arr[m]] -= 1  # Decrementa el valor en el índice arr[m] del arreglo de conteo
+        movimientos += 1  # Incrementa el contador de movimientos
+        comparaciones += 1  # Incrementa el contador de comparaciones
+        iteraciones += 1  # Incrementa el contador de iteraciones
+    print("Iteraciones :", iteraciones)  # Imprime el número de iteraciones
+    print("Movimientos :", movimientos)  # Imprime el número de movimientos
+    print("Comparaciones :", comparaciones)  # Imprime el número de comparaciones
+    return output  # Retorna el arreglo ordenado
+        
 
 def shell_sort(arr):
+    # Obtiene la longitud del arreglo
     n = len(arr)
+    # Inicializa la brecha a la mitad de la longitud del arreglo
     gap = n // 2
+
+    # Inicializa los contadores
+    iters = 0  # Iteraciones
+    query = 0  # Consultas
+    compa = 0  # Comparaciones
+    swaps = 0  # Intercambios
+
+    # Inicia un bucle que se ejecuta hasta que la brecha sea 0
     while gap > 0:
+        # Recorre cada elemento en el arreglo a partir de la brecha
         for i in range(gap, n):
+            # Almacena el valor del elemento actual en una variable temporal
             temp = arr[i]
             j = i
+            # Inicia un bucle que se ejecuta hasta que j sea menor que la brecha o el elemento en la posición j - brecha sea menor o igual que temp
             while j >= gap and arr[j - gap] > temp:
+                # Asigna el valor del elemento en la posición j - brecha al elemento en la posición j
                 arr[j] = arr[j - gap]
                 j -= gap
+                # Incrementa el contador de intercambios
+                swaps += 1
+                # Incrementa el contador de comparaciones
+                compa += 1
+            # Asigna el valor de temp al elemento en la posición j
             arr[j] = temp
+            # Incrementa el contador de iteraciones
+            iters += 1
+        # Divide la brecha por 2
         gap //= 2
+        # Incrementa el contador de consultas
+        query += 1
+
+    # Imprime los contadores
+    print("Iteraciones :", iters)
+    print("Consultas (querys):", query)
+    print("Comparaciones :", compa)
+    print("Intercambios (swaps):", swaps)
+
+    # Retorna el arreglo ordenado
     return arr
+
 
 
 
@@ -558,10 +592,11 @@ def regC():
     C = input("Ingresa su Contraseña (8 caracteres exactos): ")
     if len(C) != 8 or not re.search("\d", C) or not re.search("\W", C):
         print("\nCONTRASEÑA INVÁLIDA. DEBE TENER EXACTAMENTE 8 CARACTERES, AL MENOS UN NÚMERO Y AL MENOS UN CARÁCTER ESPECIAL.")
-        regC()
+        return regC()  # Devuelve el resultado de la llamada recursiva
     else:
         guardar_datos()
         return C
+
 
 
 # Función para registrar un usuario
@@ -662,4 +697,4 @@ def main(end):
             print("\nTerminando sesion")  # Informa al usuario que la sesión está terminando
             end = 1  # Establece 'end' como 1 para terminar el programa
 
-main(end) 
+main(end)
